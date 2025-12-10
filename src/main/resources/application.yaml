@@ -1,0 +1,17 @@
+uta:
+  api:
+    baseUrl: "https://utapl.azurewebsites.net/api"
+    authUrl: "https://utapl.azurewebsites.net/api/Authentication/Authenticate"
+    synchronizationClientId: ${CLIENT_ID}
+    userName: ${USER_NAME}
+    password: ${PASSWORD}
+
+csv:
+  directory: "csv"
+
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+  config:
+    import: "optional:file:.env[.properties]"
