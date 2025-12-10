@@ -1,11 +1,12 @@
 package com.uta.api.service;
 
 import com.uta.api.dto.VehicleFuelUsage;
+import com.uta.api.dto.VehiclesFuelConsumptionSummary;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface UtaTransactionsCalculationsService {
 
-    List<VehicleFuelUsage> getActualVehicleFuelUsage(LocalDate startDate);
+    VehiclesFuelConsumptionSummary getActualVehicleFuelUsage(LocalDate startDate);
 }

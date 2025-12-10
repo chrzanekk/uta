@@ -1,10 +1,7 @@
 package com.uta.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.uta.api.dto.ConsumerApiResponse;
-import com.uta.api.dto.ConsumerCSVResponse;
-import com.uta.api.dto.FuelTransactionFromCSVDto;
-import com.uta.api.dto.VehicleFuelUsage;
+import com.uta.api.dto.*;
 import com.uta.api.service.UtaTransactionsApiService;
 import com.uta.api.service.UtaTransactionsCalculationsService;
 import com.uta.api.service.UtaTransactionsCsvService;
@@ -48,10 +45,10 @@ public class UtaController {
     }
 
     @GetMapping("/fuel-usage")
-    public ResponseEntity<List<VehicleFuelUsage>> getFuelUsage(
+    public ResponseEntity<VehiclesFuelConsumptionSummary> getFuelUsage(
             @RequestParam(value = "startDate", defaultValue = "2025-01-01")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
-        List<VehicleFuelUsage> result = utaTransactionsCalculationsService.getActualVehicleFuelUsage(startDate);
+        VehiclesFuelConsumptionSummary result = utaTransactionsCalculationsService.getActualVehicleFuelUsage(startDate);
         return ResponseEntity.ok(result);
     }
 }
