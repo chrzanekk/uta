@@ -15,9 +15,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UtaAuthService {
 
     private final Logger logger = LoggerFactory.getLogger(UtaAuthService.class);
-    private final RestClient authClient; // Osobny klient do autoryzacji (bez interceptora!)
+    private final RestClient authClient;
 
-    // Przechowujemy token i czas wygaśnięcia w wątkowo-bezpiecznym kontenerze
     private final AtomicReference<String> currentToken = new AtomicReference<>();
     private final AtomicReference<Instant> tokenExpiration = new AtomicReference<>(Instant.MIN);
 
@@ -62,13 +61,12 @@ public class UtaAuthService {
                     "password", password
             );
 
-            // Odbieramy surowy String (token)
             String rawToken = authClient.post()
                     .uri(authUrl)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(credentials)
                     .retrieve()
-                    .body(String.class); // <--- ZMIANA TUTAJ
+                    .body(String.class);
 
             if (rawToken != null) {
                 String cleanToken = rawToken.replace("\"", "").trim();
