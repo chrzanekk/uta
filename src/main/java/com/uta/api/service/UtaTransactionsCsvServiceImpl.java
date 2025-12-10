@@ -1,6 +1,6 @@
 package com.uta.api.service;
 
-import com.uta.api.dto.FuelTransactionDto;
+import com.uta.api.dto.FuelTransactionFromCSVDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
-public class FuelTransactionImportService {
+public class UtaTransactionsCsvServiceImpl implements UtaTransactionsCsvService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -29,8 +29,9 @@ public class FuelTransactionImportService {
     @Value("${csv.directory:csv}")
     private String csvDirectory;
 
-    public List<FuelTransactionDto> importAllFromDirectory() {
-        List<FuelTransactionDto> allTransactions = new ArrayList<>();
+    @Override
+    public List<FuelTransactionFromCSVDto> importAllFromDirectory() {
+        List<FuelTransactionFromCSVDto> allTransactions = new ArrayList<>();
 
         Path folderPath = Paths.get(csvDirectory);
 
@@ -64,10 +65,10 @@ public class FuelTransactionImportService {
     }
 
 
-    private List<FuelTransactionDto> processSingeFile(Path filePath) {
+    private List<FuelTransactionFromCSVDto> processSingeFile(Path filePath) {
         log.info("Przetwarzanie pliku: {}", filePath.getFileName());
         try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
-            List<FuelTransactionDto> transactions = utaCsvParserService.parseCsv(reader);
+            List<FuelTransactionFromCSVDto> transactions = utaCsvParserService.parseCsv(reader);
             log.info("Plik {} przetworzony pomyślnie. Znaleziono {} rekordów.", filePath.getFileName(), transactions.size());
             return transactions;
         } catch (IOException e) {

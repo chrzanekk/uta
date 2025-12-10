@@ -1,9 +1,8 @@
 package com.uta.api.service;
 
-import com.uta.api.config.BearerTokenInterceptor;
-import com.uta.api.dto.FuelTransactionDto;
+import com.uta.api.dto.FuelTransactionFromApiDto;
 import com.uta.api.exception.ClientNotFoundException;
-import com.uta.api.dto.ConsumerResponse;
+import com.uta.api.dto.ConsumerApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UtaTransactionsServiceImpl implements UtaTransactionsService {
+public class UtaTransactionsApiServiceImpl implements UtaTransactionsApiService {
 
     private static final String SYNC_CLIENT = "synchronizationClientId";
 
@@ -28,14 +27,14 @@ public class UtaTransactionsServiceImpl implements UtaTransactionsService {
     @Value("${uta.api.synchronizationClientId}")
     private String syncClientID;
 
-    public UtaTransactionsServiceImpl(RestClient restClient) {
+    public UtaTransactionsApiServiceImpl(RestClient restClient) {
         this.restClient = restClient;
     }
 
     @Override
-    public ConsumerResponse getTransactions() {
+    public ConsumerApiResponse getTransactions() {
         logger.debug("Request to get list of all fuel transactions");
-        List<FuelTransactionDto> transactions = restClient.get()
+        List<FuelTransactionFromApiDto> transactions = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam(SYNC_CLIENT, syncClientID)
                         .build())
@@ -45,12 +44,12 @@ public class UtaTransactionsServiceImpl implements UtaTransactionsService {
                     throw new ClientNotFoundException("Resource not found: " + response.getStatusCode());
                 })).body(new ParameterizedTypeReference<>() {
                 });
-        List<FuelTransactionDto> safeList = transactions != null ? transactions : List.of();
-        return new ConsumerResponse(safeList, safeList.size());
+        List<FuelTransactionFromApiDto> safeList = transactions != null ? transactions : List.of();
+        return new ConsumerApiResponse(safeList, safeList.size());
     }
 
     @Override
-    public ConsumerResponse getTransactions(LocalDateTime startDate, LocalDateTime endDate) {
-        return new ConsumerResponse(List.of(), 0);
+    public ConsumerApiResponse getTransactions(LocalDateTime startDate, LocalDateTime endDate) {
+        return new ConsumerApiResponse(List.of(), 0);
     }
 }
