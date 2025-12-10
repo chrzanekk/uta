@@ -17,7 +17,7 @@ public class UtaClientConfig {
     private String userName;
 
 
-    @Bean("utaRestClient") // Nazwany bean, żeby nie kolidował z innymi
+    @Bean("utaRestClient")
     public RestClient utaRestClient(UtaAuthService authService) {
         String fullUrl = UriComponentsBuilder.fromUriString(baseUrl)
                 .pathSegment("Customer", userName, "em-trans-data").build().toUriString();

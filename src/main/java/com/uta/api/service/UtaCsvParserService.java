@@ -35,12 +35,10 @@ public class UtaCsvParserService {
     }
 
     private FuelTransactionDto mapToDto(UtaCsvRow row) {
-        // 1. Parsowanie daty i czasu (teraz używamy angielskich getterów)
         LocalDate date = LocalDate.parse(row.getTransactionDate(), DATE_FORMATTER);
         LocalTime time = LocalTime.parse(row.getTransactionTime(), TIME_FORMATTER);
         LocalDateTime dateTime = LocalDateTime.of(date, time);
 
-        // 2. Parsowanie Produktu
         String productCode = "";
         String productName = row.getProductCodeRaw();
         if (row.getProductCodeRaw() != null && row.getProductCodeRaw().contains(" ")) {
@@ -49,7 +47,6 @@ public class UtaCsvParserService {
             productName = parts[1];
         }
 
-        // 3. Wyciąganie marki z lokalizacji
         String brand = "";
         String city = row.getStationLocation();
         if (row.getStationLocation() != null && row.getStationLocation().contains(",")) {

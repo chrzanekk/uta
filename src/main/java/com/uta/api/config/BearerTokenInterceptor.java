@@ -22,30 +22,20 @@ public class BearerTokenInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        // 1. Pobierz token (z cache lub nowy) i dodaj do nagłówka
         String token = authService.getAccessToken();
         request.getHeaders().set(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
-        // 2. Wykonaj request
         ClientHttpResponse response = execution.execute(request, body);
 
-        // 3. Sprawdź czy dostaliśmy 401 Unauthorized
         if (response.getStatusCode() == HttpStatus.UNAUTHORIZED) {
             logger.warn("Received 401 Unauthorized. Invalidating token and retrying...");
 
-            // 4. Inwaliduj token (wymuś pobranie nowego przy następnym wołaniu)
             authService.invalidateToken();
 
-            // 5. Pobierz świeży token
             String newToken = authService.getAccessToken();
 
-            // UWAGA: Nie możemy zmodyfikować 'request' (jest immutable w niektórych implementacjach),
-            // ale nagłówki są zazwyczaj mutowalne przed wysłaniem.
-            // Jeśli używasz standardowego request factory, to zadziała.
             request.getHeaders().set(HttpHeaders.AUTHORIZATION, "Bearer " + newToken);
 
-            // 6. Ponów request
-            // Musimy zamknąć poprzedni response stream, żeby nie było wycieku zasobów
             response.close();
             return execution.execute(request, body);
         }

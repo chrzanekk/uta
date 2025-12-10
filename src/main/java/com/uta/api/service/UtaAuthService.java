@@ -43,18 +43,15 @@ public class UtaAuthService {
         return currentToken.get();
     }
 
-    // Metoda do wymuszenia odświeżenia (np. gdy dostaniemy 401 mimo ważnego czasu)
     public void invalidateToken() {
         this.tokenExpiration.set(Instant.MIN);
     }
 
     private boolean isTokenExpired() {
-        // Bufor bezpieczeństwa 10 sekund, żeby nie użyć tokena, który wygaśnie "za chwilę"
         return Instant.now().plusSeconds(10).isAfter(tokenExpiration.get());
     }
 
     private synchronized void refreshToken() {
-        // Double-check locking
         if (!isTokenExpired()) {
             return;
         }
@@ -73,16 +70,11 @@ public class UtaAuthService {
                     .retrieve()
                     .body(String.class); // <--- ZMIANA TUTAJ
 
-            // Czasami tokeny przychodzą w cudzysłowie (np. "abcde..."), warto je wyczyścić
             if (rawToken != null) {
-                // Usuwamy ewentualne cudzysłowy z początku i końca, jeśli API zwraca JSON-owy string
                 String cleanToken = rawToken.replace("\"", "").trim();
 
                 currentToken.set(cleanToken);
 
-                // SKORO API NIE ZWRACA CZASU WYGAŚNIĘCIA:
-                // Musisz ustalić go "na sztywno" zgodnie z dokumentacją (pisałeś, że ważny godzinę).
-                // Odejmijmy 5 minut dla bezpieczeństwa.
                 tokenExpiration.set(Instant.now().plusSeconds(3600 - 300));
 
                 logger.info("Token refreshed successfully. Valid for ~1 hour.");
