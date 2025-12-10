@@ -1,7 +1,7 @@
 package com.uta.api.service;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.uta.api.csv.UtaCsvRow;
+import com.uta.api.dto.UtaCsvRow;
 import com.uta.api.dto.FuelTransactionFromCSVDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
