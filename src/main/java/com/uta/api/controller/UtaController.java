@@ -1,7 +1,10 @@
 package com.uta.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.uta.api.dto.*;
+import com.uta.api.dto.ConsumerApiResponse;
+import com.uta.api.dto.ConsumerCSVResponse;
+import com.uta.api.dto.FuelTransactionFromCSVDto;
+import com.uta.api.dto.VehiclesFuelConsumptionSummary;
 import com.uta.api.service.UtaTransactionsApiService;
 import com.uta.api.service.UtaTransactionsCalculationsService;
 import com.uta.api.service.UtaTransactionsCsvService;
@@ -30,7 +33,7 @@ public class UtaController {
     @GetMapping("/all")
     public ResponseEntity<ConsumerApiResponse> getAllUtaTransactions() throws JsonProcessingException {
         ConsumerApiResponse response = utaTransactionsApiService.getTransactions();
-        if(response == null) {
+        if (response == null) {
             ConsumerApiResponse empty = new ConsumerApiResponse(Collections.emptyList(), 0);
             return new ResponseEntity<>(empty, HttpStatus.OK);
         }
@@ -50,5 +53,14 @@ public class UtaController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
         VehiclesFuelConsumptionSummary result = utaTransactionsCalculationsService.getActualVehicleFuelUsage(startDate);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/transactions")
+    public ResponseEntity<ConsumerCSVResponse> getTransactionsByRegistrationNumber(
+            @RequestParam(value = "registrationNumber", defaultValue = "") String registrationNumber,
+            @RequestParam(value = "startDate", defaultValue = "2025-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
+        List<FuelTransactionFromCSVDto> response = utaTransactionsCalculationsService.getTransactionsByRegistrationNumber(registrationNumber, startDate);
+        return ResponseEntity.ok(new ConsumerCSVResponse(response, response.size()));
     }
 }

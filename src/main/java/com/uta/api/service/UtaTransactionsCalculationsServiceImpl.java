@@ -81,4 +81,22 @@ public class UtaTransactionsCalculationsServiceImpl implements UtaTransactionsCa
         if (regNumber == null) return "UNKNOWN";
         return regNumber.replaceAll("\\s+", "").toUpperCase();
     }
+
+
+    @Override
+    public List<FuelTransactionFromCSVDto> getTransactionsByRegistrationNumber(String registrationNumber, LocalDate startDate) {
+        log.info("Rozpoczynam obliczanie zużycia paliwa dla pojazdu o numerach: {} od daty: {}", registrationNumber, startDate);
+
+        List<FuelTransactionFromCSVDto> allTransactions = csvService.importAllFromDirectory();
+
+        List<FuelTransactionFromCSVDto> usageByVehicle = allTransactions.stream()
+                .filter(t -> t.deliveryDate() != null)
+                .filter(t -> !t.deliveryDate().toLocalDate().isBefore(startDate))
+                .filter(t -> "LTR".equalsIgnoreCase(t.unitOfMeasure()))
+                .filter(t -> t.registrationNumber() != null && !t.registrationNumber().isBlank() && normalizeRegistrationNumber(t.registrationNumber()).equalsIgnoreCase(normalizeRegistrationNumber(registrationNumber)))
+                .filter(t -> t.quantity() != null)
+                .toList();
+        log.info("Obliczono zużycie dla numerów rejestracyjnych {}: ilość transakcji: {} ",registrationNumber, usageByVehicle.size());
+        return usageByVehicle;
+    }
 }
