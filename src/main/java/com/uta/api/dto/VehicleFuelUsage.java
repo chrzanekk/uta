@@ -1,6 +1,6 @@
 package com.uta.api.dto;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-public record VehicleFuelUsage(String registrationNumber, BigDecimal fuelQuantity) {
+public record VehicleFuelUsage(String registrationNumber, List<FuelDTO> fuelUsage) {
 }

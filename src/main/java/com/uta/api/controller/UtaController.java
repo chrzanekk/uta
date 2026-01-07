@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -68,4 +69,14 @@ public class UtaController {
         List<FuelTransactionFromCSVDto> response = utaTransactionsCalculationsService.getTransactionsByRegistrationNumber(registrationNumber, startDate);
         return ResponseEntity.ok(new ConsumerCSVResponse(response, response.size()));
     }
+
+    @GetMapping("/misfuel-transactions")
+    public ResponseEntity<ConsumerCSVResponse> getSmallTransactions(
+
+            @RequestParam(value = "startDate", defaultValue = "2025-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
+        ConsumerCSVResponse response = utaTransactionsCalculationsService.findMisfuelTransactions(startDate);
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -1,6 +1,6 @@
-package com.uta.api.dto;
+package com.uta.api.enumeration;
 
-import com.uta.api.enumeration.EuNorm;
+import com.uta.api.dto.CarDetailsDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ public enum CarsDetails {
     DACIA_JOGGER("LU327NF", 2022, EuNorm.EURO6),
     DISCOVERY("LPU84276", 2015, EuNorm.EURO5),
     VOLVO_XC90("LU019SY", 2024, EuNorm.EURO6),
-    WAG1("WAG1", 2024, EuNorm.EURO5),
+    WAG1("WAG1", 2024, EuNorm.EURO2),
     WAG2("WAG2", 2024, EuNorm.EURO5),
     WAG3("WAG3", 2024, EuNorm.EURO5),
     WAG4("WAG4", 2024, EuNorm.EURO5),
